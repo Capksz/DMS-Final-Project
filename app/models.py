@@ -29,8 +29,7 @@ class Game(db.Model):
     release_date = db.Column(db.Date)
 
 
-class LibraryGame(db.Model):  # weak entity depended on user
-    id = db.Column(db.Integer, primary_key=True)
+class LibraryGame(db.Model):  # weak entity dependent on user and game
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
     last_played = db.Column(db.DateTime)
