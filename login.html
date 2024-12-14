@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Sdeem</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                        url('/api/placeholder/1920/1080') center/cover no-repeat;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #171a21;
+            padding: 0 2rem;
+            height: 60px;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-left a {
+            color: #b8b6b4;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .nav-left a:hover {
+            color: #ffffff;
+        }
+
+        .install-button {
+            background-color: #5c7e10;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 2px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .install-button:hover {
+            background-color: #4c6b22;
+        }
+
+        .login-button {
+            color: #b8b6b4;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .login-button:hover {
+            color: #ffffff;
+        }
+
+        .nav-separator {
+            color: #2f89bc;
+            margin: 0 0.5rem;
+        }
+
+        .login-container {
+            max-width: 740px;
+            margin: 100px auto;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .login-form {
+            background-color: rgba(27, 40, 56, 0.9);
+            padding: 24px;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .login-info {
+            width: 100%;
+            max-width: 280px;
+            margin-left: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 32px;
+            font-weight: normal;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #b8b6b4;
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #32353c;
+            border: 1px solid #32353c;
+            border-radius: 3px;
+            color: #fff;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #00adef;
+            outline: none;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .remember-me label {
+            text-transform: none;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .signin-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00adef;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .signin-button:hover {
+            background-color: #0090c5;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .forgot-password a {
+            color: #00adef;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover {
+            color: #1a9fff;
+        }
+
+        .info-box {
+            background-color: rgba(27, 40, 56, 0.9);
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            color: #fff;
+            font-size: 18px;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #b8b6b4;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 10px 0;
+        }
+
+        .join-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4c6b22;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .join-button:hover {
+            background-color: #587a26;
+        }
+
+        .flash-messages {
+            max-width: 740px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .flash-message {
+            background-color: #171a21;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00adef;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/">STORE</a>
+            <a href="/community">COMMUNITY</a>
+            <a href="/about">ABOUT</a>
+            <a href="/support">SUPPORT</a>
+        </div>
+        <div class="nav-right">
+            <a href="/download" class="install-button">Install Sdeem</a>
+            <span class="nav-separator">|</span>
+            {% if session.get('user_id') %}
+                <a href="/logout" class="login-button">Logout</a>
+            {% else %}
+                <a href="/login" class="login-button">login</a>
+                <span class="nav-separator">|</span>
+                <a href="/language" class="login-button">language</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="login-container">
+        <div class="login-form">
+            <h2>SIGN IN</h2>
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label for="username">Sdeem account name</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Remember me on this computer</label>
+                </div>
+                <button type="submit" class="signin-button">Sign in</button>
+                <div class="forgot-password">
+                    <a href="/forgot-password">Forgot your password?</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="login-info">
+            <div class="info-box">
+                <h3>Join Sdeem and discover</h3>
+                <p>thousands of games to play.</p>
+                <img src="/api/placeholder/200/100" alt="Sdeem client" style="width: 100%; margin: 10px 0;">
+                <p>It's free and easy to use.</p>
+                <a href="/join" class="join-button">Join Sdeem</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
