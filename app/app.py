@@ -5,6 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 from models import db, User
 from prepopulate_db import prepopulate_db
 
+from models import Game, LibraryGame
+from datetime import datetime
+from sqlalchemy import and_
+from decimal import Decimal
+
 from flask import Flask, jsonify, render_template, request, redirect, url_for, flash, session, abort
 
 app = Flask(__name__)
@@ -114,11 +119,74 @@ def publish_review():
 def publish_success():
     return render_template('publish_success.html')
 
+# purcahse
+@app.route('/purchase/<int:game_id>', methods=['GET', 'POST'])
+def purchase(game_id):
+    if not is_logged_in():
+        flash('Please login to purchase games.')
+        return redirect(url_for('login'))
 
-# Purchase game
-@app.route('/purchase')
-def purchase():
-    pass
+    user = User.query.get(session['user_id'])
+    game = Game.query.get_or_404(game_id)
+
+    if request.method == 'POST':
+        existing_game = LibraryGame.query.filter(
+            and_(
+                LibraryGame.user_id == user.id,
+                LibraryGame.game_id == game.id
+            )
+        ).first()
+
+        if existing_game:
+            flash('You already own this game!')
+            return redirect(url_for('home'))
+
+        if user.wallet_balance < game.price:
+            flash('Insufficient funds!')
+            return redirect(url_for('purchase', game_id=game_id))
+
+        user.wallet_balance -= game.price
+
+        library_game = LibraryGame(
+            user_id=user.id,
+            game_id=game.id,
+            last_played=None,
+            favorite_status=False,
+            hours_played=0,
+            is_downloaded=False
+        )
+
+        db.session.add(library_game)
+        db.session.commit()
+
+        flash('Game purchased successfully!')
+        return redirect(url_for('home'))
+
+    return render_template('purchase.html', game=game, user=user)
+
+#game library
+@app.route('/library')
+def library():
+    if not is_logged_in():
+        flash('Please login to view your library.')
+        return redirect(url_for('login'))
+
+    user = User.query.get(session['user_id'])
+    library_games = LibraryGame.query.filter_by(user_id=user.id).all()
+
+    games = []
+    for lib_game in library_games:
+        game = Game.query.get(lib_game.game_id)
+        if game:
+            games.append({
+                'game': game,
+                'last_played': lib_game.last_played,
+                'hours_played': lib_game.hours_played,
+                'is_downloaded': lib_game.is_downloaded,
+                'favorite_status': lib_game.favorite_status
+            })
+
+    return render_template('library.html', games=games, user=user)
 
 
 # view game details
