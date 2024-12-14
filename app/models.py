@@ -16,3 +16,33 @@ class User(db.Model):
     
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+
+class Game(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Numeric(6, 2), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    developer = db.Column(db.String(100))
+    publisher = db.Column(db.String(100))
+    release_date = db.Column(db.Date)
+
+
+class LibraryGame(db.Model):  # weak entity depended on user
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
+    last_played = db.Column(db.DateTime)
+    favorite_status = db.Column(db.Boolean, default=False)
+    hours_played = db.Column(db.Numeric(6, 2), default=0.0)
+    is_downloaded = db.Column(db.Boolean, default=False)
+    game = db.relationship('Game', backref='library_entries')
+
+
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
+    payment_method = db.Column(db.String(50))  # credit card or paypal
+    status = db.Column(db.String(20), default='completed')
+    amount = db.Column(db.Numeric(6, 2), nullable=False)
