@@ -1,28 +1,15 @@
 import os
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 import sqlite3
+from flask import Flask, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from models import db, User
+from prepopulate_db import prepopulate_db
+
 
 app = Flask(__name__)
-
-DATABASE = 'mydatabase.db'
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE)  
-    return conn
-
-def initalize_database():
-    if not os.path.exists(DATABASE):
-        print(f"Database file '{DATABASE}' not found. Initializing database...")
-        with open(SCHEMA_FILE, 'r') as schema:
-            sql_script = schema.read()
-        conn = sqlite3.connect(DATABASE)
-        conn.executescript(sql_script)
-        conn.close()
-        print("Database initialized successfully!")
-    else:
-        print(f"Database file '{DATABASE}' already exists. Skipping initialization and connecting.")
-        conn = sqlite3.connect(DATABASE)
-    return conn     
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)  
 
 # Store
 @app.route('/')
@@ -39,14 +26,9 @@ def login():
 def publish():
     pass
 
-# publish game
+# Purchase game
 @app.route('/purchase')
 def purchase():
-    pass
-
-# publish game
-@app.route('/publish')
-def publish():
     pass
 
 # view game details
@@ -59,6 +41,21 @@ def game(game_id):
 def viewGames(user_id):
     pass
 
+"""THIS IS AN EXAMPLE ONLY!"""
+
+# Route to display all users
+@app.route('/users', methods=['GET'])
+def get_users():
+    """Fetch and return all users from the database."""
+    users = User.query.all()  # Query all users
+    # Convert user objects to a list of dictionaries
+    users_list = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
+    return jsonify(users_list)  # Return as JSON
+
 # Run the application
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+        prepopulate_db(app)
+    
     app.run(debug=True)

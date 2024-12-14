@@ -4,3 +4,5 @@ CREATE TABLE IF NOT EXISTS users (
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL
 );
+
+INSERT INTO users (name, email) VALUES ('John Doe', 'john.doe@example.com');
