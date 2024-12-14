@@ -10,6 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
     role = db.Column(db.String(20), nullable=False, default="user")
+    wallet_balance = db.Column(db.Numeric(10, 2), default=5000) 
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
