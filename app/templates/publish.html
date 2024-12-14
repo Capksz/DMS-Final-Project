@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/publish.css') }}">
+</head>
+<body>
+    <h1>Publish Game</h1>
+    <form action="{{ url_for('publish') }}" method="POST">
+        <label for="game_name">Name of the Game:</label>
+        <input type="text" id="game_name" name="game_name" required><br><br>
+
+        <label for="required_age">Required Age:</label>
+        <input type="number" id="required_age" name="required_age" required><br><br>
+
+        <label for="price">Price:</label>
+        <input type="number" step="0.01" id="price" name="price" required><br><br>
+
+        <label for="dlc_count">DLC Count:</label>
+        <input type="number" id="dlc_count" name="dlc_count" required><br><br>
+
+        <label>Windows:</label>
+        <input type="radio" id="windows_yes" name="windows" value="yes" required>
+        <label for="windows_yes">Yes</label>
+        <input type="radio" id="windows_no" name="windows" value="no" required>
+        <label for="windows_no">No</label><br><br>
+
+        <label>Mac:</label>
+        <input type="radio" id="mac_yes" name="mac" value="yes" required>
+        <label for="mac_yes">Yes</label>
+        <input type="radio" id="mac_no" name="mac" value="no" required>
+        <label for="mac_no">No</label><br><br>
+
+        <label>Linux:</label>
+        <input type="radio" id="linux_yes" name="linux" value="yes" required>
+        <label for="linux_yes">Yes</label>
+        <input type="radio" id="linux_no" name="linux" value="no" required>
+        <label for="linux_no">No</label><br><br>
+
+        <label for="achievements">Achievements:</label>
+        <input type="number" id="achievements" name="achievements" required><br><br>
+
+        <label for="supported_languages">Supported Languages:</label>
+        <select id="supported_languages" name="supported_languages" multiple>
+            <option value="English">English</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+            <option value="German">German</option>
+        </select><br><br>
+
+        <label for="full_audio_languages">Full Audio Languages:</label>
+        <select id="full_audio_languages" name="full_audio_languages" multiple>
+            <option value="English">English</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+        </select><br><br>
+
+        <label for="developers">Developers:</label>
+        <input type="text" id="developers" name="developers" placeholder="Comma-separated names"><br><br>
+
+        <label for="publishers">Publishers:</label>
+        <select id="publishers" name="publishers" multiple>
+            <option value="Valve">Valve</option>
+            <option value="EA">EA</option>
+            <option value="Ubisoft">Ubisoft</option>
+        </select><br><br>
+
+        <label for="categories">Categories:</label>
+        <select id="categories" name="categories" multiple>
+            <option value="Multiplayer">Multiplayer</option>
+            <option value="Single Player">Single Player</option>
+            <option value="Co-op">Co-op</option>
+        </select><br><br>
+
+        <label for="genres">Genres:</label>
+        <select id="genres" name="genres" multiple>
+            <option value="Action">Action</option>
+            <option value="Adventure">Adventure</option>
+            <option value="RPG">RPG</option>
+        </select><br><br>
+
+        <label for="game_tags">Game Tags:</label>
+        <select id="game_tags" name="game_tags" multiple>
+            <option value="Indie">Indie</option>
+            <option value="Action">Action</option>
+            <option value="Strategy">Strategy</option>
+        </select><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

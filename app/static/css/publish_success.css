@@ -1,0 +1,76 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #1b2838;
+    color: #fff;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.review-container {
+    max-width: 800px;
+    margin: 30px auto;
+    background-color: #16202d;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.review-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.review-container ul li {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.review-container ul li strong {
+    color: #1a9fff;
+}
+
+button {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #1a9fff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1486cc;
+}
+
+a {
+    display: block;
+    text-align: center;
+    margin: 20px auto;
+    text-decoration: none;
+    font-weight: bold;
+    color: #1a9fff;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #1486cc;
+    text-decoration: underline;
+}
+
+form {
+    text-align: center;
+    margin-top: 20px;
+}

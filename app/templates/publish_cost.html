@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish Review</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/publish_cost.css') }}">
+
+</head>
+<body>
+    <h1>Publish Review</h1>
+    <h2>Game Details</h2>
+    <ul>
+        <li><strong>Name:</strong> {{ form_data['game_name'] }}</li>
+        <li><strong>Price:</strong> ${{ form_data['price'] }}</li>
+        <li><strong>Predicted Popularity:</strong> {{ predicted_popularity }}%</li>
+        <li><strong>Publishing Fee:</strong> ${{ publishing_fee }}</li>
+    </ul>
+    <form action="{{ url_for('publish_review') }}" method="POST">
+        <button type="submit">Confirm</button>
+    </form>
+    <a href="{{ url_for('publish') }}">Go Back</a>
+</body>
+</html>
