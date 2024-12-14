@@ -37,6 +37,19 @@
             background-color: #16202d;
             padding: 1rem;
             border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .game-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 1rem;
         }
 
         /* Modal styles */
@@ -64,34 +77,6 @@
             z-index: 1000;
         }
 
-        .modal-content {
-            text-align: center;
-        }
-
-        .modal-image {
-            width: 100%;
-            height: auto;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-
-        .modal-navigation {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .modal-nav-button {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            font-size: 24px;
-            padding: 10px 20px;
-            border-radius: 4px;
-        }
-
         .view-details {
             background-color: #1a9fff;
             color: white;
@@ -99,49 +84,76 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
         }
 
-        .price-tag {
+        .game-price {
             background-color: #4c6b22;
             padding: 5px 10px;
             border-radius: 4px;
-            margin-left: 10px;
+            margin-top: 10px;
+            display: inline-block;
         }
 
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
+        .flash-message {
+            background-color: #171a21;
             color: #fff;
-            font-size: 24px;
-            cursor: pointer;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00adef;
+        }
+
+        .nav-link {
+            color: #b8b6b4;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+
+        .nav-link:hover {
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <!-- Main content -->
     <nav class="navbar">
         <div class="container">
-            <a href="/">Home</a>
-            <a href="/login">Login</a>
-            <a href="/publish">Publish Game</a>
-            <a href="/users">Users</a>
+            <a href="/" class="nav-link">Home</a>
+            {% if session.get('user_id') %}
+                <a href="/library" class="nav-link">Library</a>
+                <a href="/logout" class="nav-link">Logout</a>
+            {% else %}
+                <a href="/login" class="nav-link">Login</a>
+            {% endif %}
         </div>
     </nav>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="container">
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <div class="container">
         <h1>Welcome to Game Store</h1>
         <div class="game-grid">
-            <!-- Game cards here -->
+            {% for game in games %}
             <div class="game-card">
-                <h3>Sample Game 1</h3>
-                <p>A fascinating adventure game</p>
-                <p>Price: $29.99</p>
-                <button class="view-details">View Details</button>
+                <img src="/api/placeholder/300/150" alt="{{ game.name }}" class="game-image">
+                <h3>{{ game.name }}</h3>
+                <p>{{ game.description[:100] }}...</p>
+                <div class="game-price">${{ '%.2f'|format(game.price) }}</div>
+                <a href="{{ url_for('purchase', game_id=game.id) }}" class="view-details">
+                    Purchase Game
+                </a>
             </div>
-            <!-- More game cards... -->
+            {% endfor %}
         </div>
     </div>
 
@@ -154,7 +166,7 @@
                 <div class="modal-navigation">
                     <button class="modal-nav-button" id="prevButton">❮</button>
                     <div>
-                        <button class="view-details">Click to View Details</button>
+                        <button class="view-details">View Details</button>
                         <span class="price-tag" id="modalPrice">-50% $50.50</span>
                     </div>
                     <button class="modal-nav-button" id="nextButton">❯</button>
