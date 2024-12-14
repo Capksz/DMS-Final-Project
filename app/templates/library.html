@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Library - Sdeem</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1b2838;
+            color: #fff;
+        }
+
+        .navbar {
+            background-color: #171a21;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav-link {
+            color: #b8b6b4;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+        }
+
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .game-card {
+            background-color: #16202d;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .game-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .game-info {
+            padding: 1rem;
+        }
+
+        .game-title {
+            font-size: 1.2rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .game-stats {
+            font-size: 0.9rem;
+            color: #8f98a0;
+        }
+
+        .play-button {
+            background-color: #a4d007;
+            color: #111;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .play-button:hover {
+            background-color: #8eaf0a;
+        }
+
+        .flash-message {
+            background-color: #171a21;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00adef;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="nav-link">Store</a>
+            <a href="/library" class="nav-link">Library</a>
+            <a href="/logout" class="nav-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h1>My Library</h1>
+
+        {% if games %}
+        <div class="library-grid">
+            {% for game_info in games %}
+            <div class="game-card">
+                <img src="/api/placeholder/300/150" alt="{{ game_info.game.name }}" class="game-image">
+                <div class="game-info">
+                    <h3 class="game-title">{{ game_info.game.name }}</h3>
+                    <div class="game-stats">
+                        <p>Hours Played: {{ '%.1f'|format(game_info.hours_played) }}</p>
+                        {% if game_info.last_played %}
+                        <p>Last Played: {{ game_info.last_played.strftime('%Y-%m-%d') }}</p>
+                        {% endif %}
+                        <p>Status: {% if game_info.is_downloaded %}Downloaded{% else %}Not Downloaded{% endif %}</p>
+                    </div>
+                    <button class="play-button">
+                        {% if game_info.is_downloaded %}
+                            Play
+                        {% else %}
+                            Download
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>Your library is empty. Visit the store to purchase games!</p>
+        {% endif %}
+    </div>
+</body>
+</html>
