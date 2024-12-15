@@ -100,10 +100,7 @@ def preprocess_data():
     for column in ['tags', 'developers', 'publishers', 'categories', 'genres', 'languages', 'full_audio_languages']:
         merged_df[column] = merged_df[column].apply(lambda x: x.split(',') if isinstance(x, str) else [])
 
-    # Compute the upvote ratio
     merged_df['upvote_ratio'] = merged_df['positive_votes'] / (merged_df['positive_votes'] + merged_df['negative_votes'])
-
-    # Count the number of elements in multi-category fields as new features
     merged_df['tags_count'] = merged_df['tags'].apply(len)
     merged_df['developers_count'] = merged_df['developers'].apply(len)
     merged_df['publishers_count'] = merged_df['publishers'].apply(len)
@@ -111,26 +108,7 @@ def preprocess_data():
     merged_df['genres_count'] = merged_df['genres'].apply(len)
     merged_df['languages_count'] = merged_df['languages'].apply(len)
     merged_df['full_audio_languages_count'] = merged_df['full_audio_languages'].apply(len)
-
-    # Drop the original multi-category fields
     merged_df.drop(['tags', 'developers', 'publishers', 'categories', 'genres', 'languages', 'full_audio_languages'], axis=1, inplace=True)
-
-    # # get the strings back to array because the forms and values in the db will only be in 1NF not allowing for nested arrays
-    # merged_df['tags'] = merged_df['tags'].apply(lambda x: x.split(',') if isinstance(x, str) else [])
-    # merged_df['developers'] = merged_df['developers'].apply(lambda x: x.split(',') if isinstance(x, str) else [])
-    # merged_df['publishers'] = merged_df['publishers'].apply(lambda x: x.split(',') if isinstance(x, str) else [])
-    # merged_df['categories'] = merged_df['categories'].apply(lambda x: x.split(',') if isinstance(x, str) else [])
-    # merged_df['genres'] = merged_df['genres'].apply(lambda x: x.split(',') if isinstance(x, str) else [])
-    # merged_df['languages'] = merged_df['languages'].apply(lambda x: x.split(',') if isinstance(x, str) else [])
-    # merged_df['full_audio_languages'] = merged_df['full_audio_languages'].apply(lambda x: x.split(',') if isinstance(x, str) else [])
-    # merged_df['upvote_ratio'] = merged_df['positive_votes'] / (merged_df['positive_votes'] + merged_df['negative_votes'])
-
-    # mlb = MultiLabelBinarizer()
-    # for column in ['developers', 'publishers', 'categories', 'genres', 'tags', 'languages', 'full_audio_languages']:
-    #     encoded = pd.DataFrame(mlb.fit_transform(merged_df[column]), columns=[f"{column}_{cls}" for cls in mlb.classes_], index=merged_df.index)
-    #     merged_df = pd.concat([merged_df, encoded], axis=1)
-
-    # merged_df.drop(['developers', 'publishers', 'categories', 'genres', 'tags', 'languages', 'full_audio_languages'], axis=1, inplace=True)
 
     return merged_df
 
@@ -143,11 +121,9 @@ def train_and_save_model(processed_df):
     and save them in their respective tables.
     """
 
-    # Label encode the target column
     label_encoder = LabelEncoder()
     processed_df['estimated_owners'] = label_encoder.fit_transform(processed_df['estimated_owners'])
 
-    # Define feature sets
     all_data_features = processed_df.drop(columns=[
         'estimated_owners', 'game_id', 'name', 'release_date', 'positive_votes', 'negative_votes'
     ]).columns.tolist()
@@ -206,7 +182,6 @@ def train_and_save_model(processed_df):
     ml_session.add(basic_info_model_entry)
     print(f"Basic-Info Model saved successfully with accuracy {mean_accuracy_basic:.4f}.")
 
-    # Commit all changes to the database
     ml_session.commit()
 
 
