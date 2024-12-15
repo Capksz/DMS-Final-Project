@@ -95,11 +95,9 @@
             <p>Release Date: {{ game.release_date }}</p>
             <p>Price: ${{ '%.2f'|format(game.price) }}</p>
 
-            <form action="{{ url_for('purchase', game_id=game.id) }}" method="POST">
-                <button type="submit" class="purchase-button">
-                    Purchase for ${{ '%.2f'|format(game.price) }}
-                </button>
-            </form>
+            <a href="{{ url_for('purchase', game_id=game.id, confirm=1) }}" class="purchase-button">
+                Purchase for ${{ '%.2f'|format(game.price) }}
+            </a>
         </div>
     </div>
 </body>

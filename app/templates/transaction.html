@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Purchase - Sdeem</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/transaction.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="nav-link">Store</a>
+            {% if session.get('user_id') %}
+                <a href="/library" class="nav-link">Library</a>
+                <a href="/logout" class="nav-link">Logout</a>
+            {% else %}
+                <a href="/login" class="nav-link">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="transaction-box">
+            <h2>Confirm Your Purchase</h2>
+
+            <div class="balance-info">
+                Your current balance: ${{ '%.2f'|format(user.wallet_balance) }}
+            </div>
+
+            <div class="game-info">
+                <h3>{{ game.name }}</h3>
+                <p>{{ game.description }}</p>
+                <p>Developer: {{ game.developer }}</p>
+                <p>Publisher: {{ game.publisher }}</p>
+            </div>
+
+            <div class="price-info">
+                Purchase Price: ${{ '%.2f'|format(game.price) }}<br>
+                Balance after purchase: ${{ '%.2f'|format(user.wallet_balance - game.price) }}
+            </div>
+
+            <div class="button-group">
+                <form action="{{ url_for('purchase', game_id=game.id) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="confirm-button">Confirm Purchase</button>
+                </form>
+                <a href="{{ url_for('home') }}" class="cancel-button">Cancel</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

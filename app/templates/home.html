@@ -9,19 +9,20 @@
 <body>
     <nav class="navbar">
         <div class="container">
-            <a href="/">Home</a>
-            {% if not session.get('user_id') %}
-                <a href="/login">Login</a>
-            {% endif %}
-            {% if session.get('role') == 'developer/publisher' %}
-                <a href="/publish">Publish Game</a>
-            {% endif %}
-            <a href="/users">Users</a>
-            {% if session.get('username') %}
+            <a href="/" class="nav-link">Store</a>
+            {% if session.get('user_id') %}
+                <a href="/library" class="nav-link">Library</a>
+                {% if session.get('role') == 'developer/publisher' %}
+                    <a href="/publish" class="nav-link">Publish Game</a>
+                {% endif %}
+                <a href="/logout" class="nav-link">Logout</a>
                 <div class="user-info">
                     Welcome, {{ session.get('username') }}!
                 </div>
+            {% else %}
+                <a href="/login" class="nav-link">Login</a>
             {% endif %}
+            <a href="/users" class="nav-link">Users</a>
         </div>
     </nav>
 
@@ -43,90 +44,21 @@
                 <img src="/api/placeholder/300/150" alt="{{ game.name }}" class="game-image">
                 <h3>{{ game.name }}</h3>
                 <p>{{ game.description[:100] }}...</p>
+                <p>Developer: {{ game.developer }}</p>
+                <p>Publisher: {{ game.publisher }}</p>
                 <div class="game-price">${{ '%.2f'|format(game.price) }}</div>
-                <a href="{{ url_for('purchase', game_id=game.id) }}" class="view-details">
-                    Purchase Game
-                </a>
+                {% if session.get('user_id') %}
+                    <a href="{{ url_for('purchase', game_id=game.id) }}" class="view-details">
+                        Purchase Game
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="view-details">
+                        Login to Purchase
+                    </a>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
     </div>
-
-    <!-- Promotional Modal -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="promotional-modal">
-            <button class="close-modal" onclick="closeModal()">×</button>
-            <div class="modal-content">
-                <img id="modalImage" class="modal-image" src="/api/placeholder/800/400" alt="Game">
-                <div class="modal-navigation">
-                    <button class="modal-nav-button" id="prevButton">❮</button>
-                    <div>
-                        <button class="view-details">View Details</button>
-                        <span class="price-tag" id="modalPrice">-50% $50.50</span>
-                    </div>
-                    <button class="modal-nav-button" id="nextButton">❯</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const games = [
-            {
-                image: '/api/placeholder/800/400',
-                title: 'Squad',
-                price: '$50.50',
-                discount: '50%'
-            },
-            {
-                image: '/api/placeholder/800/400',
-                title: 'Dragon Ball Z: Kakarot',
-                price: '$199.00',
-                discount: '30%'
-            }
-        ];
-
-        let currentGameIndex = 0;
-
-        function updateModalContent() {
-            const game = games[currentGameIndex];
-            document.getElementById('modalImage').src = game.image;
-            document.getElementById('modalPrice').textContent = `-${game.discount} ${game.price}`;
-        }
-
-        function nextGame() {
-            currentGameIndex = (currentGameIndex + 1) % games.length;
-            updateModalContent();
-        }
-
-        function previousGame() {
-            currentGameIndex = (currentGameIndex - 1 + games.length) % games.length;
-            updateModalContent();
-        }
-
-        function closeModal() {
-            document.getElementById('modalOverlay').style.display = 'none';
-        }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            updateModalContent();
-
-            // Set up navigation buttons
-            document.getElementById('nextButton').addEventListener('click', nextGame);
-            document.getElementById('prevButton').addEventListener('click', previousGame);
-
-            // Add keyboard navigation
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'ArrowRight') {
-                    nextGame();
-                } else if (event.key === 'ArrowLeft') {
-                    previousGame();
-                } else if (event.key === 'Escape') {
-                    closeModal();
-                }
-            });
-        });
-    </script>
 </body>
 </html>
