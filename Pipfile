@@ -5,6 +5,11 @@ name = "pypi"
 
 [packages]
 flask-sqlalchemy = "*"
+scikit-learn = "*"
+pyarrow = "*"
+fastparquet = "*"
+pandas = "*"
+matplotlib = "*"
 
 [dev-packages]
 

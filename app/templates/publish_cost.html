@@ -13,8 +13,9 @@
     <ul>
         <li><strong>Name:</strong> {{ form_data['game_name'] }}</li>
         <li><strong>Price:</strong> ${{ form_data['price'] }}</li>
-        <li><strong>Predicted Popularity:</strong> {{ predicted_popularity }}%</li>
+        <li><strong>Predicted Popularity:</strong> {{ predicted_popularity }} estimated owners</li>
         <li><strong>Publishing Fee:</strong> ${{ publishing_fee }}</li>
+        <li><strong>Cut:</strong> {{ cut }}%</li>
     </ul>
     <form action="{{ url_for('publish_review') }}" method="POST">
         <button type="submit">Confirm</button>

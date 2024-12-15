@@ -37,6 +37,8 @@ class Game(db.Model):
     categories = db.Column(db.Text, nullable=True, default="")
     genres = db.Column(db.Text, nullable=True, default="")
     game_tags = db.Column(db.Text, nullable=True, default="")
+    publishing_fee = db.Column(db.Numeric, nullable=True)
+    cut = db.Column(db.Numeric, nullable=True)
     def get_supported_languages(self):
         return self.supported_languages.split(',')
 
