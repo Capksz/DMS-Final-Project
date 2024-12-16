@@ -327,13 +327,36 @@ def library():
 # view game details
 @app.route('/game/<game_id>')
 def game(game_id):
-    pass
+    if not is_logged_in():
+        flash('Please login to view game details.')
+        return redirect(url_for('login'))
+
+    game = Game.query.get_or_404(game_id)
+    game_details = {
+        "name": game.name,
+        "price": game.price,
+        "developer": game.developer,
+        "publisher": game.publisher,
+        "description": game.description,
+        "required_age": game.required_age,
+        "categories": game.categories.split(',') if game.categories else [],
+        "genres": game.genres.split(',') if game.genres else [],
+        "supported_platforms": {
+            "Windows": game.windows_support,
+            "Mac": game.mac_support,
+            "Linux": game.linux_support,
+        },
+        "image_url": game.image_url if hasattr(game, 'image_url') else "default_game_image.jpg"
+    }
+
+    return render_template(
+        'game_details.html',
+        game=game_details,
+        purchase_url=url_for('purchase', game_id=game.id)
+    )
 
 
-# view my games
-@app.route('/myGames/<user_id>')
-def viewGames(user_id):
-    pass
+
 
 
 """THIS IS AN EXAMPLE ONLY!"""
