@@ -6,13 +6,11 @@ def prepopulate_db(app):
     with app.app_context():
         should_populate = False
 
-        # Check if we need to populate any data
         if User.query.first() is None or Game.query.first() is None:
             should_populate = True
             print("Database needs population, starting process...")
 
         if should_populate:
-            # Add users if none exist
             if User.query.first() is None:
                 print("Adding users...")
                 user1 = User(username="John Doe", email="john.doe@example.com", role="user")
@@ -28,7 +26,6 @@ def prepopulate_db(app):
                 db.session.commit()
                 print("Users added successfully!")
 
-            # Add games if none exist
             if Game.query.first() is None:
                 print("Adding games...")
                 games = [
