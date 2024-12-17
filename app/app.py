@@ -345,8 +345,8 @@ def game(game_id):
             "Windows": game.windows_support,
             "Mac": game.mac_support,
             "Linux": game.linux_support,
-        },
-        "image_url": game.image_url if hasattr(game, 'image_url') else "default_game_image.jpg"
+        }
+        
     }
 
     return render_template(
