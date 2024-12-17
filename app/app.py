@@ -350,9 +350,7 @@ def game(game_id):
     }
 
     return render_template(
-        'game_details.html',
-        game=game_details,
-        purchase_url=url_for('purchase', game_id=game.id)
+        'game_details.html', game=game_details, purchase_url=url_for('purchase', game_id=game.id)
     )
 
 
