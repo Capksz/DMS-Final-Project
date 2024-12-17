@@ -31,20 +31,37 @@
         <div class="transaction-box">
             <h2>Confirm Your Purchase</h2>
 
-            <div class="balance-info">
-                Your current balance: ${{ '%.2f'|format(user.wallet_balance) }}
-            </div>
+            {% if session['payment_method'] == 'wallet' %}
+                <div class="balance-info">
+                    Your current balance: ${{ '%.2f'|format(user.wallet_balance) }}
+                </div>
+                <div class="price-info">
+                    Purchase Price: ${{ '%.2f'|format(game.price) }}<br>
+                    Balance after purchase: ${{ '%.2f'|format(user.wallet_balance - game.price) }}
+                </div>
+            {% elif session['payment_method'] == 'credit_card' %}
+                <div class="credit-card-info">
+                    <h3>Enter Credit Card Details</h3>
+                    <form action="{{ url_for('purchase', game_id=game.id) }}" method="POST">
+                        <label for="card_number">Card Number:</label><br>
+                        <input type="text" id="card_number" name="card_number" maxlength="16" required><br><br>
+                        
+                        <label for="expiry_date">Expiry Date:</label><br>
+                        <input type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" required><br><br>
+
+                        <label for="cvv">CVV:</label><br>
+                        <input type="text" id="cvv" name="cvv" maxlength="3" required><br><br>
+
+                        <button type="submit" class="confirm-button">Pay ${{ '%.2f'|format(game.price) }}</button>
+                    </form>
+                </div>
+            {% endif %}
 
             <div class="game-info">
                 <h3>{{ game.name }}</h3>
                 <p>{{ game.description }}</p>
                 <p>Developer: {{ game.developer }}</p>
                 <p>Publisher: {{ game.publisher }}</p>
-            </div>
-
-            <div class="price-info">
-                Purchase Price: ${{ '%.2f'|format(game.price) }}<br>
-                Balance after purchase: ${{ '%.2f'|format(user.wallet_balance - game.price) }}
             </div>
 
             <div class="button-group">

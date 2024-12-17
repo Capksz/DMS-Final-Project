@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.tree import plot_tree, export_text
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from models import db, User
+from models import db, User, Payment
 from prepopulate_db import prepopulate_db
 
 from models import Game, LibraryGame
@@ -145,7 +145,9 @@ def publish():
             "game_tags": request.form.getlist('game_tags'),
         }
 
+        payment_method = request.form.get('payment_method')
         session['form_data'] = form_data
+        session['payment_method'] = payment_method
 
         try:
             model, trained_columns, label_encoder = load_most_recent_model()
@@ -199,12 +201,24 @@ def publish_review():
     predicted_popularity = session.get('predicted_popularity', None)
     publishing_fee = session.get('publishing_fee', None)
     cut = session.get('cut', None)
-
+    payment_method = session.get('payment_method', None)
+    user = User.query.get(session['user_id']) 
     if not form_data or predicted_popularity is None or publishing_fee is None:
         flash("You need to submit the form before accessing the review page.")
         return redirect(url_for('publish'))
 
     if request.method == 'POST':
+        if payment_method == 'wallet':
+            if user.wallet_balance < publishing_fee:
+                flash("Insufficient wallet balance to cover the publishing fee.")
+                return redirect(url_for('publish_review'))
+            user.wallet_balance -= publishing_fee
+
+        if payment_method == 'credit_card':
+            card_number = request.form.get('card_number')
+            if not card_number:
+                flash('Please provide a valid credit card number.')
+                return redirect(url_for('publish_review'))
         new_game = Game(
             name=form_data['game_name'],
             price=form_data['price'],
@@ -227,6 +241,15 @@ def publish_review():
             cut = cut
         )
         db.session.add(new_game)
+        payment = Payment(
+            user_id=session.get('user_id'),
+            game_id=new_game.id,
+            purchase_type='publish',
+            payment_method=session.get('payment_method', 'wallet'),  # Default to 'wallet' if not specified
+            status='completed',
+            amount=publishing_fee
+        )
+        db.session.add(payment)
         db.session.commit()
         published_game = Game.query.filter_by(name=form_data['game_name']).first()
         if published_game:
@@ -243,14 +266,15 @@ def publish_review():
         form_data=form_data,
         predicted_popularity=predicted_popularity,
         publishing_fee=publishing_fee,
-        cut=cut
+        cut=cut,
+        user=user
     )
 
 @app.route('/publish/success', methods=['GET'])
 def publish_success():
     return render_template('publish_success.html')
 
-# purcahse
+#purchase
 @app.route('/purchase/<int:game_id>', methods=['GET', 'POST'])
 def purchase(game_id):
     if not is_logged_in():
@@ -261,22 +285,49 @@ def purchase(game_id):
     game = Game.query.get_or_404(game_id)
 
     if request.method == 'POST':
-        existing_game = LibraryGame.query.filter(
-            and_(
-                LibraryGame.user_id == user.id,
-                LibraryGame.game_id == game.id
-            )
-        ).first()
+        payment_method = request.form.get('payment_method')
+        session['payment_method'] = payment_method
 
-        if existing_game:
-            flash('You already own this game!')
-            return redirect(url_for('home'))
+        return redirect(url_for('review', game_id=game_id))
 
-        if user.wallet_balance < game.price:
-            flash('Insufficient funds!')
-            return redirect(url_for('purchase', game_id=game_id))
+    return render_template('purchase.html', game=game, user=user)
 
-        user.wallet_balance -= game.price
+@app.route('/review/<int:game_id>', methods=['GET', 'POST'])
+def review(game_id):
+    if not is_logged_in():
+        flash('Please login to continue.')
+        return redirect(url_for('login'))
+
+    user = User.query.get(session['user_id'])
+    game = Game.query.get_or_404(game_id)
+    payment_method = session.get('payment_method')
+    print("herro")
+    print(payment_method)
+
+    # Check if the game is already in the user's library
+    existing_game = LibraryGame.query.filter(
+        and_(
+            LibraryGame.user_id == user.id,
+            LibraryGame.game_id == game.id
+        )
+    ).first()
+
+    if existing_game:
+        flash('You already own this game!')
+        return redirect(url_for('library'))
+
+    if request.method == 'POST':
+        if payment_method == 'wallet':
+            if user.wallet_balance < game.price:
+                flash('Insufficient funds!')
+                return redirect(url_for('purchase', game_id=game_id))
+            user.wallet_balance -= game.price
+        else:
+            # Credit card logic (dummy processing)
+            card_number = request.form.get('card_number')
+            if not card_number:
+                flash('Please enter credit card details.')
+                return redirect(url_for('review', game_id=game_id))
 
         library_game = LibraryGame(
             user_id=user.id,
@@ -286,17 +337,36 @@ def purchase(game_id):
             hours_played=0,
             is_downloaded=False
         )
-
         db.session.add(library_game)
+
+        payment = Payment(
+            user_id=user.id,
+            game_id=game.id,
+            purchase_type='game',
+            payment_method=payment_method,
+            amount=game.price,
+            status='completed'
+        )
+        db.session.add(payment)
         db.session.commit()
 
         flash('Game purchased successfully!')
-        return redirect(url_for('library'))
+        return redirect(url_for('confirmation', game_id=game_id))
 
-    if not request.args.get('confirm'):
-        return render_template('purchase.html', game=game, user=user)
+    return render_template('review_game_purchase.html', game=game, user=user, payment_method=payment_method)
 
-    return render_template('transaction.html', game=game, user=user)
+@app.route('/confirmation/<int:game_id>')
+def confirmation(game_id):
+    if not is_logged_in():
+        flash('Please login to continue.')
+        return redirect(url_for('login'))
+    
+    user = User.query.get(session['user_id'])
+    game = Game.query.get_or_404(game_id)
+
+    session.pop('payment_method', None)
+
+    return render_template('confirmation.html', game=game, user=user)
 
 
 #game library
@@ -333,6 +403,7 @@ def game(game_id):
 
     game = Game.query.get_or_404(game_id)
     game_details = {
+        "id": game.id,
         "name": game.name,
         "price": game.price,
         "developer": game.developer,
@@ -350,24 +421,9 @@ def game(game_id):
     }
 
     return render_template(
-        'game_details.html', game=game_details, purchase_url=url_for('purchase', game_id=game.id)
+        'game_details.html', game=game_details
     )
 
-
-
-
-
-"""THIS IS AN EXAMPLE ONLY!"""
-
-
-# Route to display all users
-@app.route('/users', methods=['GET'])
-def get_users():
-    """Fetch and return all users from the database."""
-    users = User.query.all()  # Query all users
-    # Convert user objects to a list of dictionaries
-    users_list = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
-    return jsonify(users_list)  # Return as JSON
 
 
 # Run the application

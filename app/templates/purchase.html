@@ -95,9 +95,17 @@
             <p>Release Date: {{ game.release_date }}</p>
             <p>Price: ${{ '%.2f'|format(game.price) }}</p>
 
-            <a href="{{ url_for('purchase', game_id=game.id, confirm=1) }}" class="purchase-button">
-                Purchase for ${{ '%.2f'|format(game.price) }}
-            </a>
+            <form method="POST" action="{{ url_for('purchase', game_id=game.id) }}">
+                <label for="payment_method"><strong>Select Payment Method:</strong></label>
+                <select id="payment_method" name="payment_method" required>
+                    <option value="wallet">Wallet</option>
+                    <option value="credit_card">Credit Card</option>
+                </select>
+                <br><br>
+                <button type="submit" class="purchase-button">
+                    Purchase for ${{ '%.2f'|format(game.price) }}
+                </button>
+            </form>            
         </div>
     </div>
 </body>

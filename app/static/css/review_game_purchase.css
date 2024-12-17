@@ -1,0 +1,81 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1b2838;
+    color: #fff;
+}
+
+.navbar {
+    background-color: #171a21;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #16202d;
+    border-radius: 4px;
+}
+
+.game-details {
+    margin-bottom: 20px;
+}
+
+.game-details h2 {
+    color: #a4d007;
+}
+
+.payment-method {
+    background-color: #32353c;
+    padding: 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.payment-method input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 4px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.confirm-button {
+    background-color: #a4d007;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.confirm-button:hover {
+    background-color: #8eaf0a;
+}
+
+.cancel-button {
+    background-color: #e74c3c;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+}
+
+.cancel-button:hover {
+    background-color: #c0392b;
+}

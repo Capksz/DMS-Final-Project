@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Confirmation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/review_game_purchase.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/library" class="nav-link">Library</a>
+            <a href="/logout" class="nav-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Purchase Successful!</h1>
+        
+        <div class="button-group">
+            <a href="{{ url_for('home') }}" class="confirm-button">Return to Home</a>
+            <a href="{{ url_for('library') }}" class="confirm-button">Go to Library</a>
+        </div>
+    </div>
+</body>
+</html>

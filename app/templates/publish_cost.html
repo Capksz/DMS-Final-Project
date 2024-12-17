@@ -18,7 +18,20 @@
         <li><strong>Cut:</strong> {{ cut }}%</li>
     </ul>
     <form action="{{ url_for('publish_review') }}" method="POST">
-        <button type="submit">Confirm</button>
+        <h2>Payment Method: {{ session['payment_method']|capitalize }}</h2>
+        {% if session['payment_method'] == 'credit_card' %}
+            <label for="card_number">Enter Credit Card Number:</label>
+            <input type="text" id="card_number" name="card_number" required><br><br>
+        {% else %}
+            <div class="balance-info">
+                <p>Your current wallet balance: <strong>${{ '%.2f'|format(user.wallet_balance) }}</strong></p>
+                <p>Publishing Fee: <strong>${{ '%.2f'|format(publishing_fee) }}</strong></p>
+                <p>Balance after deduction: 
+                    <strong>${{ '%.2f'|format(user.wallet_balance - publishing_fee) }}</strong>
+                </p>
+            </div>
+        {% endif %}
+        <button type="submit">Confirm Payment</button>
     </form>
     <a href="{{ url_for('publish') }}">Go Back</a>
 </body>

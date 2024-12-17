@@ -75,3 +75,24 @@ button:hover {
     color: #fff;
     margin-top: 10px;
 }
+
+.purchase-button {
+    display: inline-block;
+    background-color: #a4d007;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.purchase-button:hover {
+    background-color: #8eaf0a;
+    color: #fff;
+    text-decoration: none;
+}

@@ -65,6 +65,7 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
-    payment_method = db.Column(db.String(50))  # credit card or paypal
+    purchase_type = db.Column(db.String(50)) #publish or game
+    payment_method = db.Column(db.String(50))  # credit card or wallet
     status = db.Column(db.String(20), default='completed')
     amount = db.Column(db.Numeric(6, 2), nullable=False)
