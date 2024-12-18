@@ -4,11 +4,12 @@
 
 1. Clone or download the project, open the folder with a code editor of choice.
 2. Download these [files](https://drive.google.com/drive/folders/1GhwZqpVS8e4JrZPaApRALSExSvl8Pyfg?usp=sharing) (must be NYU authorized), put them in the ```DMS-Final-Project/ML``` folder.
-3. In the code editor, open the terminal. Note that the terminal should be in the base folder DMS-Final-Project and not in one of the subdirectories like ML or app.
-4. Run ```pipenv install``` to install the dependencies.
-5. Run ```pipenv shell``` to start the virtual environment shell.
-6. Run ```python ./ML/mltrainer.py```, this will create the ML files.
-7. Run ```python ./app/app.py```, this will start the web app. Access the url provided by the shell.
+3. In the code editor, open the terminal. Note that the terminal should be in the base folder DMS-Final-Project and not in one of the subdirectories like ML or app. Note that you can also do this with Powershell or Terminal without having to use the code editor. Just ensure you have Python installed.
+4. Run ```pip install pipenv``` if you do not have pipenv in your pc.
+5. Run ```pipenv install``` to install the dependencies.
+6. Run ```pipenv shell``` to start the virtual environment shell.
+7. Run ```python ./ML/mltrainer.py```, this will create the ML files.
+8. Run ```python ./app/app.py```, this will start the web app. Access the url provided by the shell.
 
 ## Logins
 
