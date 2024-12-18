@@ -241,11 +241,12 @@ def publish_review():
             cut = cut
         )
         db.session.add(new_game)
+        db.session.commit()
         payment = Payment(
             user_id=session.get('user_id'),
             game_id=new_game.id,
             purchase_type='publish',
-            payment_method=session.get('payment_method', 'wallet'),  # Default to 'wallet' if not specified
+            payment_method=session.get('payment_method', 'wallet'),
             status='completed',
             amount=publishing_fee
         )
